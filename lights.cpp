@@ -1,59 +1,62 @@
-#include <Adafruit_NeoPixel.h>
+#include <FastLED.h>
 
-int PIXEL_PIN = 6;
-int PIXEL_NUM = 50;
-int HALF_WAY = PIXEL_NUM / 2;
+#define PIXEL_PIN 2
+#define PIXEL_NUM 300
+#define HALF_WAY (PIXEL_NUM / 2)
 
-Adafruit_NeoPixel STRIP =
-    Adafruit_NeoPixel(PIXEL_NUM, PIXEL_PIN, NEO_GRB + NEO_KHZ800);
+CRGB leds[PIXEL_NUM];
 
 struct Color {
     int R;
     int G;
     int B;
-}
+};
 
-struct Color ORANGE = {210, 140, 20};
+struct Color ORANGE = {255, 50, 0};
 struct Color WHITE = {255, 255, 255};
 
-void setup() {
-    STRIP.begin();
-    STRIP.show();
-    STRIP.clear();
-}
+typedef enum {
+    LEFT,
+    RIGHT,
+} TurnDirection;
 
-enum TurnDirection {
-	LEFT,
-	RIGHT,
+void setup() {
+    FastLED.addLeds<WS2812B, PIXEL_PIN, GRB>(leds, PIXEL_NUM);
+    FastLED.setBrightness(100);
+    Serial.begin(57600);
 }
 
 void off() {
-    for (int i = 0; i < PIXEL_NUM; i++)
-        STRIP.setPixelColor(i, 0, 0, 0);
-    STRIP.show();
+    for (int i = 0; i < PIXEL_NUM; i++) {
+        leds[i] = CRGB(0, 0, 0);
+    }
+    FastLED.show();
 }
 
-void turn(TurnDirection direction, int times) {
-    for (int j = 0; j < times; j++) {
-		if (direction == TurnDirection::LEFT) {
-			for (int i = 0; i < HALF_WAY; i++) {
-				STRIP.setPixelColor(i, ORANGE.R, ORANGE.G, ORANGE.b);
-				delay(0.06);
-				STRIP.show();
-			}
-		} else if (direction == TurnDirection::Right) {
-			for (int i = HALF_WAY; i < PIXEL_NUM; i++) {
-				STRIP.setPixelColor(i, ORANGE.R, ORANGE.G, ORANGE.b);
-				delay(0.5);
-				STRIP.show();
-			}
-		}
-	}
+void set_color(int i, Color color, int time_delay) {
+    leds[i] = CRGB(color.R, color.G, color.B);
+    delay(time_delay);
+    FastLED.show();
+}
 
-	delay(1);
-	off();
+void turn(int direction, int times, int time_delay) {
+    for (int j = 0; j < times; j++) {
+        if (direction == RIGHT) {
+            for (int i = 0; i < HALF_WAY; i++) {
+                set_color(i, ORANGE, time_delay);
+            }
+        } else if (direction == LEFT) {
+            for (int i = HALF_WAY; i < PIXEL_NUM; i++) {
+                set_color(i, ORANGE, time_delay);
+            }
+        }
+    }
+
+    delay(50);
+    off();
 }
 
 void loop() {
-	turn(TurnDirection::LEFT);
+    turn(RIGHT, 1, 2);
+    turn(LEFT, 1, 2);
 }
