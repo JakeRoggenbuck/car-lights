@@ -56,6 +56,7 @@ void turn(int direction, int times, int time_delay) {
         }
     }
 
+	delay(10);
     off();
 }
 
@@ -64,7 +65,6 @@ void multi_color_travel(int direction, int times, int time_delay) {
     for (int j = 0; j < times; j++) {
         if (direction == RIGHT) {
             for (int i = 0; i < PIXEL_NUM; i++) {
-
                 if (color_swap) {
                     set_color(i, ORANGE, time_delay);
                 } else {
