@@ -44,6 +44,22 @@ void set_color(int i, Color color, int time_delay) {
 }
 
 void turn(int direction, int times, int time_delay) {
+    for (int j = 0; j < times; j++) {
+        if (direction == RIGHT) {
+            for (int i = 0; i < PIXEL_NUM; i++) {
+                set_color(i, ORANGE, time_delay);
+            }
+        } else if (direction == LEFT) {
+            for (int i = PIXEL_NUM; i > 0; i--) {
+                set_color(i, LIGHT_BLUE, time_delay);
+            }
+        }
+    }
+
+    off();
+}
+
+void multi_color_travel(int direction, int times, int time_delay) {
     int color_swap = false;
     for (int j = 0; j < times; j++) {
         if (direction == RIGHT) {
@@ -72,6 +88,6 @@ void turn(int direction, int times, int time_delay) {
 }
 
 void loop() {
-    turn(RIGHT, 1, 0.0001);
-    turn(LEFT, 1, 0.0001);
+    turn(RIGHT, 1, 1);
+    turn(LEFT, 1, 1);
 }
