@@ -13,7 +13,11 @@ struct Color {
 };
 
 struct Color ORANGE = {255, 50, 0};
+struct Color RED = {255, 0, 0};
 struct Color WHITE = {255, 255, 255};
+struct Color LIGHT_GREEN = {20, 255, 20};
+struct Color PINK = {255, 80, 80};
+struct Color LIGHT_BLUE = {80, 80, 255};
 
 typedef enum {
     LEFT,
@@ -40,23 +44,34 @@ void set_color(int i, Color color, int time_delay) {
 }
 
 void turn(int direction, int times, int time_delay) {
+    int color_swap = false;
     for (int j = 0; j < times; j++) {
         if (direction == RIGHT) {
-            for (int i = 0; i < HALF_WAY; i++) {
-                set_color(i, ORANGE, time_delay);
+            for (int i = 0; i < PIXEL_NUM; i++) {
+
+                if (color_swap) {
+                    set_color(i, ORANGE, time_delay);
+                } else {
+                    set_color(i, LIGHT_GREEN, time_delay);
+                }
+                color_swap = !color_swap;
             }
         } else if (direction == LEFT) {
-            for (int i = HALF_WAY; i < PIXEL_NUM; i++) {
-                set_color(i, ORANGE, time_delay);
+            for (int i = PIXEL_NUM; i > 0; i--) {
+                if (color_swap) {
+                    set_color(i, LIGHT_BLUE, time_delay);
+                } else {
+                    set_color(i, PINK, time_delay);
+                }
+                color_swap = !color_swap;
             }
         }
     }
 
-    delay(50);
     off();
 }
 
 void loop() {
-    turn(RIGHT, 1, 2);
-    turn(LEFT, 1, 2);
+    turn(RIGHT, 1, 0.0001);
+    turn(LEFT, 1, 0.0001);
 }
